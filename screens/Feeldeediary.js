@@ -9,7 +9,7 @@ export default function Feeldeediary(props) {
 
    const loadDiary = async () => {
       try {
-         let promise = await fetch('https://raw.githubusercontent.com/inkkuli/feeldeeproject/main/previewAPI01.json');
+         let promise = await fetch('https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/PreviewAPI.json');
          let data = await promise.json();
          console.log("Load Data : ", data);
          //SET STATE
@@ -24,7 +24,7 @@ export default function Feeldeediary(props) {
 
 
    return (
-      <View style={{ flex: 1, backgroundColor: '#E7FBFF', marginTop: 20 }}>
+      <View style={{ flex: 1, backgroundColor: '#E7FBFF'}}>
          
          <TouchableOpacity style={{ padding:20}} onPress={ props.onPress } >
                               <FontAwesome name={"arrow-left"} size={40} color={"pink"} />

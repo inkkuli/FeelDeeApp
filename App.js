@@ -8,7 +8,7 @@ import HomeStack from './navigations/Homestack.js';
 import { NavigationContainer } from '@react-navigation/native';
 
 
-const Stack = createStackNavigator();
+
 
 
 export default function App() {
