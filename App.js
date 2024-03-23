@@ -6,6 +6,7 @@ import Feeldeediary from './screens/Feeldeediary.js';
 import Feeldeetype from './screens/Feeldeetype.js';
 import HomeStack from './navigations/Homestack.js';
 import { NavigationContainer } from '@react-navigation/native';
+import Longdee from './screens/Longdee.js';
 
 
 
@@ -16,6 +17,7 @@ export default function App() {
     <NavigationContainer>
     <HomeStack/>
     </NavigationContainer>
+ 
     
 
 
