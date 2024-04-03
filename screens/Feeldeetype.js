@@ -32,7 +32,7 @@ export default function Feeldeetype(props) {
                   <Image style={{ width: 80, height: 80 }} source={{ "uri": "https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo02.jpg" }} />
 
                </TouchableOpacity>
-               <Text style={{ fontSize: 17, color: 'gray', fontWeight: 'bold', marginBottom: -10 }}>Argry</Text>
+               <Text style={{ fontSize: 17, color: 'gray', fontWeight: 'bold', marginBottom: -10 }}>Angry</Text>
 
             </View>
          </View>
