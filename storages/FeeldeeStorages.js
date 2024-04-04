@@ -1,37 +1,35 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-const STORAGE_KEY = "@Feeldee"; //เปลี่ยนแค่ KEY 
+const STORAGE_KEY = "@feeldee"; //เปลี่ยนแค่ KEY 
 //ดึงข้อมูลทั้งหมดขึ้นมาแสดง
 const readItems = async () => {
   try {
     let string_value = await AsyncStorage.getItem(STORAGE_KEY);
-    console.log("S:", string_value);
     let items = string_value != null ? JSON.parse(string_value) : [];
-    console.log("items:", items);
     return items;
   } catch (error) {
     console.log(error);
   }
 };
 //ดึงข้อมูลแค่ 1 ชื้นขึ้นมาแสดงตาม item ที่ระบุไว้
-const readItemDetail = async (item) => {
+const readItemDetail = async (id) => {
   try {
     let string_value = await AsyncStorage.getItem(STORAGE_KEY);
     let items = string_value != null ? JSON.parse(string_value) : [];
     //CHECK IF id exist in array
-    let index = items.findIndex((p_item) => p_item.id == item.id);
+    let index = items.findIndex((p_item) => p_item.id == id);
     return items[index];
   } catch (error) {
     console.log(error);
   }
 };
 //ลบข้อมูล item ที่ระบุไว้
-const removeItem = async (item) => {
+const removeItem = async (id) => {
   try {
     //READ ALL
     let string_value = await AsyncStorage.getItem(STORAGE_KEY);
     let items = string_value != null ? JSON.parse(string_value) : [];
     //CHECK IF ITEM EXISTS    
-    let index = items.findIndex((p_item) => p_item.id == item.id);
+    let index = items.findIndex((p_item) => p_item.id == id);
     if (index > -1) {
       //REMOVE
       items.splice(index, 1);
@@ -45,6 +43,7 @@ const removeItem = async (item) => {
 };
 //เพิ่มข้อมูลและอัพเดทข้อมูล ตาม item ที่ระบุไว้
 const writeItem = async (item) => {
+  // console.log("PRESS!!");
   try {
     //READ ALL
     let string_value = await AsyncStorage.getItem(STORAGE_KEY);
@@ -66,14 +65,15 @@ const writeItem = async (item) => {
   }
 };
 
-const writeItems = async (values) => {
-  try {    
+// เขียนข้อมูลทั้งหมดลงไปใน STORAGE
+const writeItems = async (items) => {
+  try {
     //WRITE
-    string_values = JSON.stringify(values);
-    await AsyncStorage.setItem(STORAGE_KEY, string_values);
+    string_value = JSON.stringify(items);
+    await AsyncStorage.setItem(STORAGE_KEY, string_value);
   } catch (error) {
     console.log(error);
   }
 };
 
-export default { readItems, readItemDetail, removeItem, writeItem , writeItems };
+export default { readItems, readItemDetail, removeItem, writeItem, writeItems };

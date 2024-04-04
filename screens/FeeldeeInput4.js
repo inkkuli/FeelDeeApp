@@ -1,19 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import { Button, Text, TextInput } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import moment from 'moment';
+import FeeldeeStorages from "../storages/FeeldeeStorages";
+
 
 
 
 
 export default function FeeldeeInput4() {
+
+
+   const route = useRoute();
+   // RANDOM ID
+   const [key, setKey] = useState(
+      "_" + Math.random().toString(36).substring(2, 9)
+   );
    const [title, setTitle] = useState([]);
    const [diary, setDiary] = useState([]);
    const [today, setToday] = useState(moment());
-   const [uri, setUri] = useState(['https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo04.jpg'])
-
-
+   const [uri, setUri] = useState([''])
    const date = today.date();
    const englishMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
    const month = englishMonths[today.month()];
@@ -23,14 +30,38 @@ export default function FeeldeeInput4() {
 
 
 
-   console.log(`STATE  : ${title}, ${diary}, ${date}, ${month}, ${year},${uri}`);
-
+   //console.log(`STATE  : ${title}, ${diary}, ${date}, ${month}, ${year},${uri}`);
    
+
+   const onLoad = async () => {
+      const { id } = route.params;
+      if (id) {
+         setKey(id);
+         setTitle("");
+         setDiary("")
+         setToday("");
+         setUri("");
+      }
+      navigation.setOptions({ title: id ? "edit" : "create" });
+   };
+   useEffect(() => {
+      onLoad();
+   }, []);
+
+   const savediary = async () => {
+      //A NEW ITEM
+      let new_data = { "id": key, "title": title, "diary": diary ,"month":month,"date":date,"uri":'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo04.jpg'};
+      //SAVE
+      await FeeldeeStorages.writeItem(new_data);
+      //REDIRECT TO
+      navigation.navigate("Feeldeemonth");
+   };
 
 
 
 
    return (
+      
       <View style={{ flex: 1, backgroundColor: '#E7FBFF', padding: 10 }}>
 
          <View style={{ flexDirection: "row", justifyContent: 'center', marginTop: 20, marginBottom: -20 }}>
@@ -54,9 +85,12 @@ export default function FeeldeeInput4() {
                <TextInput placeholder="Input your Diary" value={diary} onChangeText={(newdiary) => setDiary(newdiary)} />
             </View>
             <View style={{ flexDirection: "row", justifyContent: 'center', marginLeft: 200 }}>
-               <TouchableOpacity onPress={() => { navigation.navigate("Feeldeemonth"); }}>
+               <TouchableOpacity onPress={() => {
+                  
+                  savediary();
+               }}>
                   <View style={{ width: 90, height: 50, backgroundColor: 'pink', borderRadius: 20, flexDirection: "column", justifyContent: 'center', alignItems: 'center' }}>
-                     <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#E7FBFF' }}>Done</Text>
+                     <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#E7FBFF' }}>Save</Text>
                   </View>
                </TouchableOpacity>
             </View>

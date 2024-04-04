@@ -9,7 +9,7 @@ import FeeldeeStorages from "../storages/FeeldeeStorages";
 
 
 
-export default function FeeldeeInput2() {
+export default function FeeldeeInput() {
 
 
    const route = useRoute();
@@ -21,18 +21,28 @@ export default function FeeldeeInput2() {
    const [diary, setDiary] = useState([]);
    const [today, setToday] = useState(moment());
    const [uri, setUri] = useState([''])
+   const [currentImageIndex, setCurrentImageIndex] = useState(0);
    const date = today.date();
    const englishMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
    const month = englishMonths[today.month()];
    const year = today.year();
    const navigation = useNavigation();
+   const imageSources = [
+      'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo01.jpg',
+      'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo02.jpg',
+      'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo03.jpg',
+      'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo04.jpg',
+      'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo05.jpg',
+      'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo06.jpg',
+      'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo07.jpg',
+      'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo08.jpg'
+   ];
 
 
 
 
    //console.log(`STATE  : ${title}, ${diary}, ${date}, ${month}, ${year},${uri}`);
    
-
    const onLoad = async () => {
       const { id } = route.params;
       if (id) {
@@ -50,13 +60,12 @@ export default function FeeldeeInput2() {
 
    const savediary = async () => {
       //A NEW ITEM
-      let new_data = { "id": key, "title": title, "diary": diary ,"month":month,"date":date,"uri":'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo02.jpg'};
+      let new_data = { "id": key, "title": title, "diary": diary ,"month":month,"date":date,"uri":imageSources[currentImageIndex]};
       //SAVE
       await FeeldeeStorages.writeItem(new_data);
       //REDIRECT TO
       navigation.navigate("Feeldeemonth");
    };
-
 
 
 
@@ -72,7 +81,9 @@ export default function FeeldeeInput2() {
          <View style={{ margin: 20, padding: 10, width: 335, height: 470, borderColor: 'white', backgroundColor: 'lightyellow', borderRadius: 20 }}>
 
             <View style={{ flexDirection: "row", justifyContent: 'center', marginBottom: 20, marginTop: 20 }}>
-               <Image style={{ width: 100, height: 100 }} source={{ "uri": "https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo02.jpg" }} />
+            <TouchableOpacity onPress={() => setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imageSources.length)}>
+                  <Image style={{ width: 100, height: 100 }} source={{ uri: imageSources[currentImageIndex] }} />
+               </TouchableOpacity>
             </View>
             <View style={{ padding: 20, backgroundColor: 'white', marginVertical: 10, borderRadius: 10, height: 90, justifyContent: "space-around" }}>
 

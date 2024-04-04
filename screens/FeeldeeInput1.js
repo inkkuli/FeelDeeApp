@@ -1,84 +1,67 @@
 import React, { useEffect, useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import { Button, Text, TextInput } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import moment from 'moment';
+import FeeldeeStorages from "../storages/FeeldeeStorages";
 
 
 
 
-export default function FeeldeeInput1(props) {
-   //const [title, setTitle] = useState([]);
-   const [note, setNote] = useState([]);
+
+export default function FeeldeeInput1() {
+
+
+   const route = useRoute();
+   // RANDOM ID
+   const [key, setKey] = useState(
+      "_" + Math.random().toString(36).substring(2, 9)
+   );
+   const [title, setTitle] = useState([]);
+   const [diary, setDiary] = useState([]);
    const [today, setToday] = useState(moment());
-   const [uri, setUri] = useState(['https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo01.jpg'])
-
-
+   const [uri, setUri] = useState([''])
    const date = today.date();
    const englishMonths = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
    const month = englishMonths[today.month()];
    const year = today.year();
    const navigation = useNavigation();
 
-   const onLoad = async () => {
-      // READ ITEMS FROM STORAGE
-      let data = await FeeldeeStorage.readItems();
-
-      console.log("data:", data);
-
-      // SET STATE - WRITE CODE HERE
-      setNote(data);
-
-   };
-
-   useEffect(() => { onLoad(); }, []);
-
-   const onCreate = async () => {
-      let new_data = {
-         id: '_' + Math.random().toString(36).substr(2, 9), //RANDOM NUMBER
-         title: "", //Empty String
-         diary: "",
-      };
-      //CLONE ARRAY + APPEND NEW DATA INTO ARRAY
-      let n = [...note, new_data];
-      //UPDATE STATE
-      setNote(n);
-
-      // WRITE ITEM TO STORAGE - WRITE CODE HERE
-      await FeelseeStorage.writeItems(n);
-
-   };
-
-   const onUpdate =async (new_title, new_diary, id) => {   
-      //CLONE ARRAY FIRST
-      let n = [...note];
-      //Find index of specific object using findIndex method.   
-      let index = n.findIndex((item => item.id == id));
-      //Update object's name property.
-      console.log("n:", n[index],id);
-      n[index].title = new_title;
-      n[index].diary = new_diary;
-      //UPDATE STATE
-      setNote(n);
-      
-      // WRITE ITEM TO STORAGE - WRITE CODE HERE
-      await FeeldeeStorage.writeItems(n);
-      
-  }; 
-
-
-  //console.log("notes", note);
 
 
 
    //console.log(`STATE  : ${title}, ${diary}, ${date}, ${month}, ${year},${uri}`);
+   
 
-   //console.log("STATE  : ", inputtitle, inputDiary,${separatedDate.date},${separatedDate.month},${separatedDate.year});
+   const onLoad = async () => {
+      const { id } = route.params;
+      if (id) {
+         setKey(id);
+         setTitle("");
+         setDiary("")
+         setToday("");
+         setUri("");
+      }
+      navigation.setOptions({ title: id ? "edit" : "create" });
+   };
+   useEffect(() => {
+      onLoad();
+   }, []);
+
+   const savediary = async () => {
+      //A NEW ITEM
+      let new_data = { "id": key, "title": title, "diary": diary ,"month":month,"date":date,"uri":'https://raw.githubusercontent.com/inkkuli/FeelDeeApp/main/assets/Emo01.jpg'};
+      //SAVE
+      await FeeldeeStorages.writeItem(new_data);
+      //REDIRECT TO
+      navigation.navigate("Feeldeemonth");
+   };
 
 
 
 
    return (
+      
       <View style={{ flex: 1, backgroundColor: '#E7FBFF', padding: 10 }}>
 
          <View style={{ flexDirection: "row", justifyContent: 'center', marginTop: 20, marginBottom: -20 }}>
@@ -93,22 +76,18 @@ export default function FeeldeeInput1(props) {
             </View>
             <View style={{ padding: 20, backgroundColor: 'white', marginVertical: 10, borderRadius: 10, height: 90, justifyContent: "space-around" }}>
 
-            {/* <TextInput placeholder="Input your Title" value={note.title} onChangeText={(title) => setNote({ ...note, title })} /> */}
-            <TextInput value={props.item.title} placeholder="Input your Title" onChangeText={(new_title) => props.onUpdate(new_title, props.item.id) }  />
-        
+               <TextInput placeholder="Input your Title" value={title} onChangeText={(newtitle) => setTitle(newtitle)} />
 
 
             </View>
             <View style={{ padding: 20, backgroundColor: 'white', marginVertical: 10, borderRadius: 10, height: 160, justifyContent: "space-around" }}>
 
-            {/* <TextInput placeholder="Input your Diary" value={note.diary} onChangeText={(diary) => setNote({ ...note, diary })} /> */}
-            <TextInput value={props.item.diary} placeholder="Input your Diary" onChangeText={(new_diary) => props.onUpdate(new_diary, props.item.id) }  />
-        
+               <TextInput placeholder="Input your Diary" value={diary} onChangeText={(newdiary) => setDiary(newdiary)} />
             </View>
             <View style={{ flexDirection: "row", justifyContent: 'center', marginLeft: 200 }}>
                <TouchableOpacity onPress={() => {
-                  onUpdate(); // เพิ่มข้อมูล
-                  // navigation.navigate("Feeldeemonth"); // นำทางไปยังหน้าถัดไป
+                  
+                  savediary();
                }}>
                   <View style={{ width: 90, height: 50, backgroundColor: 'pink', borderRadius: 20, flexDirection: "column", justifyContent: 'center', alignItems: 'center' }}>
                      <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#E7FBFF' }}>Save</Text>
